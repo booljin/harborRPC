@@ -82,9 +82,12 @@ target_link_libraries(harbor_rpc_test
     PRIVATE harborRPC
 )
 
-set_target_properties(harbor_rpc_test PROPERTIES
-    LINK_FLAGS "/SUBSYSTEM:CONSOLE"
-)
+# 设置控制台程序属性（跨平台）
+if(MSVC)
+    set_target_properties(harbor_rpc_test PROPERTIES
+        LINK_FLAGS "/SUBSYSTEM:CONSOLE"
+    )
+endif()
 
 # 启用测试
 enable_testing()

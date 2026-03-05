@@ -15,6 +15,7 @@
 #include <list>
 #include <map>
 #include <tuple>
+#include <thread>
 #include <functional>
 #include "harbor_rpc/defines.h"
 
