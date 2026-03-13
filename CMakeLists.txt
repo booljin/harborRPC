@@ -72,54 +72,36 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 
 # ============================================================
+# 编译选项
+# ============================================================
+option(harborRPC_BUILD_TESTING "Build harborRPC test programs" ${PROJECT_IS_TOP_LEVEL})
+
+# ============================================================
 # 测试目标
 # ============================================================
-add_executable(harbor_rpc_test
-    ${test_files}
-)
+if(harborRPC_BUILD_TESTING)
+    add_executable(harbor_rpc_test
+        ${test_files}
+    )
 
-target_link_libraries(harbor_rpc_test
-    PRIVATE harborRPC
-)
+    target_link_libraries(harbor_rpc_test
+        PRIVATE harborRPC
+    )
 
-# 设置控制台程序属性（跨平台）
-if(MSVC)
-    set_target_properties(harbor_rpc_test PROPERTIES
-        LINK_FLAGS "/SUBSYSTEM:CONSOLE"
+    # 设置控制台程序属性（跨平台）
+    if(MSVC)
+        set_target_properties(harbor_rpc_test PROPERTIES
+            LINK_FLAGS "/SUBSYSTEM:CONSOLE"
+        )
+    endif()
+
+    # 启用测试
+    enable_testing()
+
+    add_test(NAME harbor_rpc_test
+        COMMAND harbor_rpc_test
     )
 endif()
-
-# 启用测试
-enable_testing()
-
-add_test(NAME harbor_rpc_test
-    COMMAND harbor_rpc_test
-)
-
-# ============================================================
-# 安装配置
-# ============================================================
-include(GNUInstallDirs)
-
-install(TARGETS harborRPC
-    EXPORT harborRPC-targets
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/harbor_rpc
-)
-
-install(DIRECTORY include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    FILES_MATCHING PATTERN "*.h"
-)
-
-# 导出配置
-install(EXPORT harborRPC-targets
-    FILE harborRPC-config.cmake
-    NAMESPACE harborRPC::
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/harborRPC
-)
 
 # ============================================================
 # 打印配置信息
@@ -128,6 +110,5 @@ message(STATUS "")
 message(STATUS "======== harborRPC 配置信息 ========")
 message(STATUS "  版本:        ${PROJECT_VERSION}")
 message(STATUS "  C++ 标准:    ${CMAKE_CXX_STANDARD}")
-message(STATUS "  安装路径:    ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "=====================================")
 message(STATUS "")
